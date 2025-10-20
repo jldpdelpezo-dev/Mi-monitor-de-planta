@@ -17,8 +17,6 @@ body {
   align-items: center;
   min-height: 100vh;
   overflow-y: auto;
-  overflow-x: hidden;
-  position: relative;
 }
 body::before {
   content: "";
@@ -29,41 +27,33 @@ body::before {
   opacity: 0.25;
   z-index: 0;
 }
-.rain {
-  position: fixed;
-  top: 0; left: 0;
-  width: 100%; height: 100%;
-  overflow: hidden; pointer-events: none; z-index: 1;
-}
-.drop {
-  position: absolute;
-  width: 1.5px; height: 25px;
-  background: rgba(255,255,255,0.4);
-  border-radius: 50%;
-  filter: blur(0.5px);
-  opacity: 0.6;
-  animation: rainFall linear infinite;
-}
-@keyframes rainFall {
-  0% { transform: translateY(-10vh); opacity: 0.8; }
-  100% { transform: translateY(110vh) translateX(2vw); opacity: 0; }
-}
 header {
   width: 100%;
   background: linear-gradient(90deg, #00baff, #0077cc);
-  color: white; text-align: center;
-  padding: 15px 0; font-size: 1.4em; font-weight: 600;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.4);
-  z-index: 2; position: sticky; top: 0;
+  color: white;
+  text-align: center;
+  padding: 15px 0;
+  font-size: 1.4em;
+  font-weight: 600;
+  position: sticky;
+  top: 0;
 }
 .menu {
-  display: flex; gap: 15px; margin-top: 15px; z-index: 2;
+  display: flex;
+  gap: 15px;
+  margin-top: 15px;
+  z-index: 2;
 }
 .boton {
   background: linear-gradient(135deg, #0099ff, #0066cc);
-  border: none; border-radius: 12px; color: white;
-  padding: 10px 20px; font-size: 1em; cursor: pointer;
-  transition: 0.3s; box-shadow: 0 0 10px rgba(0,153,255,0.3);
+  border: none;
+  border-radius: 12px;
+  color: white;
+  padding: 10px 20px;
+  font-size: 1em;
+  cursor: pointer;
+  transition: 0.3s;
+  box-shadow: 0 0 10px rgba(0,153,255,0.3);
 }
 .boton:hover {
   background: linear-gradient(135deg, #00ccff, #0088ff);
@@ -74,32 +64,38 @@ header {
   backdrop-filter: blur(15px);
   border-radius: 20px;
   box-shadow: 0 0 20px rgba(0,0,0,0.4);
-  padding: 25px; margin: 25px auto;
-  width: 90%; max-width: 600px;
-  text-align: center; z-index: 2;
+  padding: 25px;
+  margin: 25px auto;
+  width: 90%;
+  max-width: 600px;
+  text-align: center;
+  z-index: 2;
   border: 1px solid rgba(255,255,255,0.15);
 }
 .gota {
-  width: 120px; height: 150px;
+  width: 120px;
+  height: 150px;
   background: radial-gradient(circle at 30% 30%, #33cfff, #0077cc 60%, #004b80);
   border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
   margin: 0 auto 10px auto;
   position: relative;
   animation: float 2.5s ease-in-out infinite;
-  display: flex; flex-direction: column;
-  align-items: center; justify-content: center;
-  color: white; font-weight: bold;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-weight: bold;
   box-shadow: 0 0 30px rgba(0,174,255,0.5), inset 0 0 18px rgba(255,255,255,0.3);
 }
-.gota::before {
-  content: ""; position: absolute;
-  top: 18%; left: 25%; width: 35%; height: 25%;
-  background: rgba(255,255,255,0.4);
-  border-radius: 50%; filter: blur(3px);
+.carita { font-size: 2.2em; margin-bottom: 5px; }
+.humedad-texto { font-size: 1.5em; }
+.comentario {
+  margin-top: 10px;
+  font-size: 1.1em;
+  color: #a7f3ff;
+  font-style: italic;
 }
-.carita { font-size: 2.2em; margin-bottom: 5px; pointer-events: none; }
-.humedad-texto { font-size: 1.5em; pointer-events: none; }
-.comentario { margin-top: 10px; font-size: 1.1em; color: #a7f3ff; font-style: italic; }
 .info {
   margin-top: 15px;
   font-size: 0.95em;
@@ -112,24 +108,19 @@ header {
 }
 .grafico-contenedor {
   display: none;
-  width: 100%; max-width: 600px; height: 300px;
+  width: 100%;
+  max-width: 600px;
+  height: 300px;
   margin: 30px auto 0 auto;
 }
 canvas { width: 100% !important; height: 100% !important; }
-@media (max-width: 600px) {
-  header { font-size: 1.2em; }
-  .gota { width: 100px; height: 130px; }
-  .dashboard { padding: 20px; }
-  .grafico-contenedor { height: 250px; }
-}
 </style>
 </head>
 <body>
-<div class="rain" id="rain"></div>
 <header>🌱 ¡Hola! Soy tu plantita 🌧️</header>
 
 <div class="menu">
-  <button class="boton" onclick="inicializarVoz(); obtenerHumedad(); mostrarGota()">🌿 Ver mi estado</button>
+  <button class="boton" onclick="activarPlanta()">🌿 Ver mi estado</button>
   <button class="boton" onclick="mostrarGrafico()">📈 Ver mi historia</button>
 </div>
 
@@ -139,10 +130,10 @@ canvas { width: 100% !important; height: 100% !important; }
     <div id="humedad" class="humedad-texto">--%</div>
   </div>
 
-  <div id="comentario" class="comentario">Analizando cómo me siento...</div>
+  <div id="comentario" class="comentario">Presiona "Ver mi estado" para comenzar</div>
 
   <div class="info" id="info">
-    📍 <span id="ubicacion">Detectando ubicación...</span><br>
+    📍 <span id="ubicacion">Ubicación no detectada</span><br>
     ⏰ <span id="fecha">--/--/----</span> — <span id="hora">--:--:--</span>
   </div>
 
@@ -154,81 +145,85 @@ canvas { width: 100% !important; height: 100% !important; }
 <script>
 const canal = 3122727;
 const apiKey = "KT8Z4PBWOXA399H0";
-let datosHumedad = [], tiempo = [];
 
+let datosHumedad = [], tiempo = [];
+let vozListas = false;
+let ubicacionDetectada = false;
+
+// Elementos
 const gota = document.getElementById('gota');
 const carita = document.getElementById('carita');
 const humedadTexto = document.getElementById('humedad');
 const comentario = document.getElementById('comentario');
-const graficoContenedor = document.getElementById('grafico-contenedor');
 const ubicacionTexto = document.getElementById('ubicacion');
 const fechaTexto = document.getElementById('fecha');
 const horaTexto = document.getElementById('hora');
+const graficoContenedor = document.getElementById('grafico-contenedor');
 
-// 🌧️ Lluvia animada
-for (let i = 0; i < 80; i++) {
-  const drop = document.createElement("div");
-  drop.classList.add("drop");
-  drop.style.left = Math.random() * 100 + "vw";
-  drop.style.animationDuration = (1 + Math.random() * 2) + "s";
-  drop.style.animationDelay = Math.random() * 4 + "s";
-  drop.style.height = 15 + Math.random() * 15 + "px";
-  document.getElementById("rain").appendChild(drop);
-}
-
-// 🕓 Fecha y hora
-function actualizarFechaHora() {
-  const ahora = new Date();
-  fechaTexto.textContent = ahora.toLocaleDateString();
-  horaTexto.textContent = ahora.toLocaleTimeString();
-}
-
-// 📍 Ubicación compatible iOS (requiere HTTPS)
-function obtenerUbicacion() {
-  if (navigator.geolocation) {
-    navigator.geolocation.getCurrentPosition(async pos => {
-      const { latitude, longitude } = pos.coords;
-      try {
-        const res = await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${latitude}&lon=${longitude}&format=json`);
-        const data = await res.json();
-        ubicacionTexto.textContent = data.address.city
-          ? `${data.address.city}, ${data.address.country}`
-          : data.display_name || "Ubicación detectada.";
-      } catch {
-        ubicacionTexto.textContent = "No se pudo obtener ubicación.";
-      }
-    }, () => {
-      ubicacionTexto.textContent = "Permiso de ubicación denegado.";
-    });
-  } else {
-    ubicacionTexto.textContent = "Geolocalización no soportada.";
-  }
-}
-
-// 📊 Gráfico
+// Inicializa gráfico
 const ctx = document.getElementById('grafico').getContext('2d');
 const grad = ctx.createLinearGradient(0, 0, 0, 300);
 grad.addColorStop(0, "rgba(0,194,255,0.6)");
 grad.addColorStop(1, "rgba(0,194,255,0.1)");
 const grafico = new Chart(ctx, {
   type: 'line',
-  data: { labels: [], datasets: [{
-    label: 'Humedad (%)',
-    data: [],
-    borderWidth: 3, borderColor: '#00baff',
-    backgroundColor: grad, tension: 0.35, fill: true, pointRadius: 4
-  }]},
-  options: {
-    responsive: true, maintainAspectRatio: false,
-    scales: {
-      y: { beginAtZero: true, max: 100, grid: { color: "rgba(255,255,255,0.08)" } },
-      x: { grid: { color: "rgba(255,255,255,0.08)" } }
-    },
-    plugins: { legend: { labels: { color: "#a7f3ff" } } }
-  }
+  data: { labels: [], datasets: [{ label: 'Humedad (%)', data: [], borderWidth: 3, borderColor: '#00baff', backgroundColor: grad, tension: 0.35, fill: true }]},
+  options: { scales: { y: { beginAtZero: true, max: 100 } } }
 });
 
-// 🌡️ Leer datos de ThingSpeak
+// Función principal
+async function activarPlanta() {
+  inicializarVoz();
+  pedirUbicacion();
+  await obtenerHumedad();
+}
+
+// Voz
+function inicializarVoz() {
+  if ('speechSynthesis' in window) {
+    speechSynthesis.getVoices();
+    vozListas = true;
+  }
+}
+function hablar(texto) {
+  if (!vozListas) return;
+  const voz = new SpeechSynthesisUtterance(texto);
+  voz.lang = 'es-ES';
+  speechSynthesis.cancel();
+  speechSynthesis.speak(voz);
+}
+
+// Fecha/Hora
+function actualizarFechaHora() {
+  const ahora = new Date();
+  fechaTexto.textContent = ahora.toLocaleDateString();
+  horaTexto.textContent = ahora.toLocaleTimeString();
+}
+
+// Ubicación (solo tras clic)
+function pedirUbicacion() {
+  if (!navigator.geolocation) {
+    ubicacionTexto.textContent = "Geolocalización no soportada";
+    return;
+  }
+  navigator.geolocation.getCurrentPosition(async pos => {
+    const { latitude, longitude } = pos.coords;
+    try {
+      const res = await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${latitude}&lon=${longitude}&format=json`);
+      const data = await res.json();
+      ubicacionTexto.textContent = data.address.city
+        ? `${data.address.city}, ${data.address.country}`
+        : `${data.display_name}`;
+      ubicacionDetectada = true;
+    } catch {
+      ubicacionTexto.textContent = "No se pudo obtener la ubicación.";
+    }
+  }, err => {
+    ubicacionTexto.textContent = "Permiso de ubicación denegado.";
+  });
+}
+
+// Obtener datos
 async function obtenerHumedad() {
   try {
     const res = await fetch(`https://api.thingspeak.com/channels/3122727/fields/4.json?results=10&api_key=KT8Z4PBWOXA399H0`);
@@ -239,18 +234,19 @@ async function obtenerHumedad() {
       tiempo = feeds.map(f => new Date(f.created_at).toLocaleTimeString());
       const ultimaH = datosHumedad[datosHumedad.length - 1];
       actualizarGota(ultimaH);
-      actualizarGrafico();
+      grafico.data.labels = tiempo;
+      grafico.data.datasets[0].data = datosHumedad;
+      grafico.update();
       actualizarFechaHora();
     }
-  } catch (e) {
-    console.error("Error al leer datos", e);
+  } catch {
+    comentario.textContent = "Error al leer datos de la planta.";
   }
 }
 
-// 💧 Expresiones de la gota
+// Reacciones
 function actualizarGota(h) {
   humedadTexto.textContent = `${h.toFixed(0)}%`;
-
   if (h > 80) {
     gota.style.background = "linear-gradient(135deg, #007bff, #0044cc)";
     carita.textContent = "😅";
@@ -259,61 +255,25 @@ function actualizarGota(h) {
   } else if (h > 50) {
     gota.style.background = "linear-gradient(135deg, #00baff, #0077cc)";
     carita.textContent = "😊";
-    comentario.textContent = "🌿 ¡Estoy feliz y fresquita! 💚";
-    hablar("Hola, estoy bien de humedad, no necesito agua.");
+    comentario.textContent = "🌿 ¡Estoy feliz y fresquita!";
+    hablar("Estoy bien de humedad, gracias.");
   } else if (h > 30) {
     gota.style.background = "linear-gradient(135deg, #ffaa00, #ff8800)";
     carita.textContent = "😐";
-    comentario.textContent = "💧 Tengo sed... un poco de agua estaría bien.";
+    comentario.textContent = "💧 Tengo sed...";
     hablar("Tengo un poquito de sed, podrías regarme pronto.");
   } else {
     gota.style.background = "linear-gradient(135deg, #ff4444, #cc0000)";
     carita.textContent = "🥵";
-    comentario.textContent = "😢 ¡Ayuda! ¡Dame agüita ya!";
+    comentario.textContent = "😢 ¡Dame agüita ya!";
     hablar("Estoy muy seca, por favor dame agüita ya.");
   }
 }
 
-// 📈 Actualizar gráfico
-function actualizarGrafico() {
-  grafico.data.labels = tiempo;
-  grafico.data.datasets[0].data = datosHumedad;
-  grafico.update();
+// Mostrar gráfico
+function mostrarGrafico() {
+  graficoContenedor.style.display = graficoContenedor.style.display === "none" ? "block" : "none";
 }
-
-// 🎤 Voz compatible iOS
-let vozListas = false;
-function inicializarVoz() {
-  if ('speechSynthesis' in window) {
-    const voces = speechSynthesis.getVoices();
-    if (voces.length === 0) {
-      speechSynthesis.onvoiceschanged = () => { vozListas = true; };
-    } else { vozListas = true; }
-  }
-  obtenerUbicacion(); // Pedir ubicación después del toque
-}
-
-function hablar(texto) {
-  if (!vozListas) return;
-  if ('speechSynthesis' in window) {
-    const voz = new SpeechSynthesisUtterance(texto);
-    voz.lang = 'es-ES';
-    const voces = speechSynthesis.getVoices();
-    const vozElegida = voces.find(v => v.lang.startsWith('es'));
-    if (vozElegida) voz.voice = vozElegida;
-    voz.pitch = 1.1;
-    voz.rate = 1;
-    speechSynthesis.cancel();
-    speechSynthesis.speak(voz);
-  }
-}
-
-// 🔘 Mostrar paneles
-function mostrarGrafico() { graficoContenedor.style.display = "block"; }
-function mostrarGota() { graficoContenedor.style.display = "none"; }
-
-// 🔁 Ciclo automático
-setInterval(obtenerHumedad, 10000);
 </script>
 </body>
 </html>

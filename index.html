@@ -2,297 +2,230 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>🌿 Mi Plantita Habladora 🌧️</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🌿 Monitoreo de Humedad en Tiempo Real</title>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <style>
-body {
-  margin: 0;
-  font-family: 'Poppins', sans-serif;
-  background: radial-gradient(circle at top left, #0a1f2a, #0d1417, #000);
-  background-attachment: fixed;
-  color: #e8f6ff;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  min-height: 100vh;
-  overflow-y: auto;
-}
-body::before {
-  content: "";
-  position: fixed;
-  inset: 0;
-  background-image: radial-gradient(rgba(255,255,255,0.05) 1px, transparent 1px);
-  background-size: 70px 70px;
-  opacity: 0.25;
-  z-index: 0;
-}
-header {
-  width: 100%;
-  background: linear-gradient(90deg, #00baff, #0077cc);
-  color: white;
-  text-align: center;
-  padding: 15px 0;
-  font-size: 1.4em;
-  font-weight: 600;
-  position: sticky;
-  top: 0;
-  z-index: 5;
-}
-.menu {
-  display: flex;
-  gap: 10px;
-  margin-top: 15px;
-  flex-wrap: wrap;
-  justify-content: center;
-  z-index: 2;
-}
-.boton {
-  background: linear-gradient(135deg, #0099ff, #0066cc);
-  border: none;
-  border-radius: 12px;
-  color: white;
-  padding: 10px 16px;
-  font-size: 1em;
-  cursor: pointer;
-  transition: 0.3s;
-  box-shadow: 0 0 10px rgba(0,153,255,0.3);
-}
-.boton:hover { transform: scale(1.05); }
+  body {
+    margin: 0;
+    overflow: hidden;
+    font-family: "Poppins", sans-serif;
+    background: radial-gradient(circle at bottom, #9be7ff, #0077b6);
+    color: #fff;
+    text-align: center;
+  }
 
-.dashboard {
-  background: rgba(255,255,255,0.07);
-  backdrop-filter: blur(15px);
-  border-radius: 20px;
-  box-shadow: 0 0 20px rgba(0,0,0,0.4);
-  padding: 20px;
-  margin: 25px auto;
-  width: 90%;
-  max-width: 600px;
-  text-align: center;
-  z-index: 2;
-  border: 1px solid rgba(255,255,255,0.15);
-}
-.gota {
-  width: 100px;
-  height: 130px;
-  background: radial-gradient(circle at 30% 30%, #33cfff, #0077cc 60%, #004b80);
-  border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
-  margin: 0 auto 10px auto;
-  position: relative;
-  animation: float 2.5s ease-in-out infinite;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  color: white;
-  font-weight: bold;
-  box-shadow: 0 0 30px rgba(0,174,255,0.5), inset 0 0 18px rgba(255,255,255,0.3);
-}
-.carita { font-size: 2em; margin-bottom: 5px; }
-.humedad-texto { font-size: 1.4em; }
-.comentario {
-  margin-top: 10px;
-  font-size: 1em;
-  color: #a7f3ff;
-  font-style: italic;
-}
-.info {
-  margin-top: 15px;
-  font-size: 0.9em;
-  color: #9edaff;
-  text-shadow: 0 0 3px rgba(0,255,255,0.4);
-}
-.grafico-contenedor {
-  display: none;
-  width: 100%;
-  max-width: 600px;
-  height: 250px;
-  margin: 30px auto 0 auto;
-}
-canvas { width: 100% !important; height: 100% !important; }
+  h1 {
+    margin-top: 20px;
+    font-size: 1.8em;
+    text-shadow: 2px 2px 5px #0003;
+  }
 
-/* 📱 Adaptación para móviles */
-@media (max-width: 480px) {
-  header { font-size: 1.1em; padding: 10px 0; }
-  .boton { font-size: 0.9em; padding: 8px 12px; }
-  .gota { width: 85px; height: 110px; }
-  .carita { font-size: 1.8em; }
-  .humedad-texto { font-size: 1.2em; }
-  .comentario { font-size: 0.9em; }
-  .info { font-size: 0.8em; }
-  .grafico-contenedor { height: 200px; }
-}
+  .botones {
+    margin: 15px;
+  }
+
+  button {
+    margin: 5px;
+    padding: 10px 20px;
+    font-size: 1em;
+    border: none;
+    border-radius: 10px;
+    background: #48cae4;
+    color: #fff;
+    cursor: pointer;
+    transition: 0.3s;
+  }
+  button:hover {
+    background: #00b4d8;
+    transform: scale(1.05);
+  }
+
+  /* Fondo animado */
+  .burbujas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    z-index: -1;
+  }
+  .burbuja {
+    position: absolute;
+    bottom: -100px;
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    animation: subir 10s infinite ease-in;
+  }
+  @keyframes subir {
+    0% { transform: translateY(0) scale(1); opacity: 1; }
+    100% { transform: translateY(-120vh) scale(0.8); opacity: 0; }
+  }
+
+  /* Secciones */
+  #estado, #historia {
+    display: none;
+    padding: 15px;
+  }
+
+  /* Gota */
+  .gota {
+    width: 120px;
+    height: 150px;
+    background: linear-gradient(180deg, #00b4d8, #0096c7);
+    border-radius: 60% 60% 50% 50% / 70% 70% 30% 30%;
+    margin: 30px auto;
+    position: relative;
+    box-shadow: 0 0 20px rgba(0, 150, 200, 0.6);
+    animation: flotar 2s ease-in-out infinite alternate;
+  }
+  @keyframes flotar {
+    0% { transform: translateY(0px); }
+    100% { transform: translateY(-10px); }
+  }
+
+  .cara {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 40px;
+  }
+
+  #humedadPorcentaje {
+    font-size: 1.4em;
+    margin-top: 10px;
+  }
+
+  #fecha, #ubicacion {
+    font-size: 1em;
+    opacity: 0.9;
+  }
 </style>
 </head>
 <body>
-<header>🌱 ¡Hola! Soy tu plantita 🌧️</header>
 
-<div class="menu">
-  <button class="boton" onclick="activarPlanta()">🌿 Ver mi estado</button>
-  <button class="boton" onclick="mostrarGrafico()">📈 Ver mi historia</button>
+<div class="burbujas"></div>
+
+<h1>🌱 Monitoreo de Humedad en Tiempo Real</h1>
+
+<div class="botones">
+  <button onclick="verEstado()">Ver mi estado</button>
+  <button onclick="verHistoria()">Ver mi historia</button>
 </div>
 
-<div class="dashboard">
-  <div id="gota" class="gota">
-    <div id="carita" class="carita">😊</div>
-    <div id="humedad" class="humedad-texto">--%</div>
+<!-- SECCIÓN ESTADO -->
+<div id="estado">
+  <div class="gota" id="gota">
+    <div class="cara" id="cara">😊</div>
   </div>
-
-  <div id="comentario" class="comentario">Presiona "Ver mi estado" para comenzar</div>
-
-  <div class="info" id="info">
-    📍 <span id="ubicacion">Ubicación no detectada</span><br>
-    ⏰ <span id="fecha">--/--/----</span> — <span id="hora">--:--:--</span>
-  </div>
-
-  <div class="grafico-contenedor" id="grafico-contenedor">
-    <canvas id="grafico"></canvas>
-  </div>
+  <div id="humedadPorcentaje">Humedad: --%</div>
+  <div id="fecha"></div>
+  <div id="ubicacion">Ubicación: --</div>
 </div>
+
+<!-- SECCIÓN HISTORIA -->
+<div id="historia">
+  <canvas id="graficaHumedad" width="350" height="200"></canvas>
+</div>
+
+<!-- AUDIO -->
+<audio id="audio" src="https://cdn.pixabay.com/download/audio/2021/09/16/audio_4c0aab2b0d.mp3?filename=waterdrop-90757.mp3"></audio>
 
 <script>
-const canal = 3122727;
-const apiKey = "KT8Z4PBWOXA399H0";
-
-let datosHumedad = [], tiempo = [];
-let vozListas = false;
-
-// Elementos
-const gota = document.getElementById('gota');
-const carita = document.getElementById('carita');
-const humedadTexto = document.getElementById('humedad');
-const comentario = document.getElementById('comentario');
-const ubicacionTexto = document.getElementById('ubicacion');
-const fechaTexto = document.getElementById('fecha');
-const horaTexto = document.getElementById('hora');
-const graficoContenedor = document.getElementById('grafico-contenedor');
-
-// Gráfico
-const ctx = document.getElementById('grafico').getContext('2d');
-const grad = ctx.createLinearGradient(0, 0, 0, 300);
-grad.addColorStop(0, "rgba(0,194,255,0.6)");
-grad.addColorStop(1, "rgba(0,194,255,0.1)");
-const grafico = new Chart(ctx, {
-  type: 'line',
-  data: { labels: [], datasets: [{ label: 'Humedad (%)', data: [], borderWidth: 3, borderColor: '#00baff', backgroundColor: grad, tension: 0.35, fill: true }]},
-  options: { 
-    responsive: true,
-    maintainAspectRatio: false,
-    scales: { 
-      y: { beginAtZero: true, max: 100, ticks: { color: '#fff', font: { size: 12 } } },
-      x: { ticks: { color: '#ccc', font: { size: 10 } } }
-    },
-    plugins: {
-      legend: { labels: { color: '#fff', font: { size: 12 } } }
-    }
-  }
-});
-
-async function activarPlanta() {
-  inicializarVoz();
-  await pedirUbicacion();
-  await obtenerHumedad();
+// Crear burbujas de fondo
+for (let i = 0; i < 20; i++) {
+  const burbuja = document.createElement("div");
+  const size = Math.random() * 40 + 10;
+  burbuja.classList.add("burbuja");
+  burbuja.style.width = `${size}px`;
+  burbuja.style.height = `${size}px`;
+  burbuja.style.left = `${Math.random() * 100}%`;
+  burbuja.style.animationDuration = `${5 + Math.random() * 5}s`;
+  document.querySelector(".burbujas").appendChild(burbuja);
 }
 
-// Voz
-function inicializarVoz() {
-  if ('speechSynthesis' in window) {
-    speechSynthesis.getVoices();
-    vozListas = true;
-  }
-}
-function hablar(texto) {
-  if (!vozListas) return;
-  const voz = new SpeechSynthesisUtterance(texto);
-  voz.lang = 'es-ES';
-  speechSynthesis.cancel();
-  speechSynthesis.speak(voz);
-}
+// Simulación de lectura de humedad
+let humedad = 65;
 
-// Fecha/Hora
-function actualizarFechaHora() {
-  const ahora = new Date();
-  fechaTexto.textContent = ahora.toLocaleDateString();
-  horaTexto.textContent = ahora.toLocaleTimeString();
-}
+// Función para actualizar la animación
+function actualizarEstado() {
+  document.getElementById("humedadPorcentaje").textContent = `Humedad: ${humedad.toFixed(1)}%`;
+  const cara = document.getElementById("cara");
 
-// Ubicación
-async function pedirUbicacion() {
-  if (!navigator.geolocation) {
-    ubicacionTexto.textContent = "Geolocalización no soportada.";
-    return;
-  }
-  return new Promise(resolve => {
-    navigator.geolocation.getCurrentPosition(async pos => {
-      const { latitude, longitude } = pos.coords;
-      try {
-        const res = await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${latitude}&lon=${longitude}&format=json`);
-        const data = await res.json();
-        ubicacionTexto.textContent = data.address.city
-          ? `${data.address.city}, ${data.address.country}`
-          : `${data.display_name}`;
-      } catch {
-        ubicacionTexto.textContent = "No se pudo obtener la ubicación.";
-      }
-      resolve();
-    }, () => {
-      ubicacionTexto.textContent = "Permiso de ubicación denegado.";
-      resolve();
-    }, { enableHighAccuracy: true, timeout: 8000 });
-  });
-}
-
-// Obtener datos
-async function obtenerHumedad() {
-  try {
-    const res = await fetch(`https://api.thingspeak.com/channels/3122727/fields/4.json?results=10&api_key=KT8Z4PBWOXA399H0`);
-    const data = await res.json();
-    const feeds = data.feeds;
-    if (feeds.length > 0) {
-      datosHumedad = feeds.map(f => parseFloat(f.field4));
-      tiempo = feeds.map(f => new Date(f.created_at).toLocaleTimeString());
-      const ultimaH = datosHumedad[datosHumedad.length - 1];
-      actualizarGota(ultimaH);
-      grafico.data.labels = tiempo;
-      grafico.data.datasets[0].data = datosHumedad;
-      grafico.update();
-      actualizarFechaHora();
-    }
-  } catch {
-    comentario.textContent = "Error al leer datos de la planta.";
-  }
-}
-
-// Reacciones
-function actualizarGota(h) {
-  humedadTexto.textContent = `${h.toFixed(0)}%`;
-  if (h > 80) {
-    gota.style.background = "linear-gradient(135deg, #007bff, #0044cc)";
-    carita.textContent = "😅";
-    comentario.textContent = "🌧 ¡Tengo demasiada agua!";
-    hablar("Tengo demasiada agua, no me pongas más.");
-  } else if (h > 50) {
-    gota.style.background = "linear-gradient(135deg, #00baff, #0077cc)";
-    carita.textContent = "😊";
-    comentario.textContent = "🌿 ¡Estoy feliz y fresquita!";
-    hablar("Estoy bien de humedad, gracias.");
-  } else if (h > 30) {
-    gota.style.background = "linear-gradient(135deg, #ffaa00, #ff8800)";
-    carita.textContent = "😐";
-    comentario.textContent = "💧 Tengo sed...";
-    hablar("Tengo un poquito de sed, podrías regarme pronto.");
+  if (humedad > 70) {
+    cara.textContent = "😊";
+  } else if (humedad > 40) {
+    cara.textContent = "😐";
   } else {
-    gota.style.background = "linear-gradient(135deg, #ff4444, #cc0000)";
-    carita.textContent = "🥵";
-    comentario.textContent = "😢 ¡Dame agüita ya!";
-    hablar("Estoy muy seca, por favor dame agüita ya.");
+    cara.textContent = "🥵";
+  }
+
+  // Actualizar fecha
+  const ahora = new Date();
+  document.getElementById("fecha").textContent =
+    "Fecha: " + ahora.toLocaleDateString() + " " + ahora.toLocaleTimeString();
+}
+
+// Obtener ubicación
+function obtenerUbicacion() {
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(
+      pos => {
+        const { latitude, longitude } = pos.coords;
+        document.getElementById("ubicacion").textContent =
+          `Ubicación: ${latitude.toFixed(4)}, ${longitude.toFixed(4)}`;
+      },
+      err => {
+        document.getElementById("ubicacion").textContent = "Ubicación: Permiso denegado";
+      }
+    );
   }
 }
 
-// Mostrar gráfico
-function mostrarGrafico() {
-  graficoContenedor.style.display = graficoContenedor.style.display === "none" ? "block" : "none";
+// Alternar vistas
+function verEstado() {
+  document.getElementById("estado").style.display = "block";
+  document.getElementById("historia").style.display = "none";
+  const audio = document.getElementById("audio");
+  audio.play().catch(err => console.log("Audio bloqueado:", err));
+  actualizarEstado();
+  obtenerUbicacion();
+}
+
+function verHistoria() {
+  document.getElementById("estado").style.display = "none";
+  document.getElementById("historia").style.display = "block";
+  crearGrafica();
+}
+
+// Gráfica simulada
+function crearGrafica() {
+  const ctx = document.getElementById("graficaHumedad").getContext("2d");
+  new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: ["Lun", "Mar", "Mié", "Jue", "Vie", "Sáb", "Dom"],
+      datasets: [{
+        label: "Humedad (%)",
+        data: [70, 68, 72, 65, 60, 58, 62],
+        borderColor: "#00e1ff",
+        backgroundColor: "rgba(0,225,255,0.3)",
+        borderWidth: 2,
+        tension: 0.4,
+        fill: true
+      }]
+    },
+    options: {
+      scales: {
+        y: { beginAtZero: true, max: 100 }
+      },
+      plugins: {
+        legend: { labels: { color: "#fff" } }
+      }
+    }
+  });
 }
 </script>
 </body>

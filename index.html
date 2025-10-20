@@ -162,17 +162,24 @@ header {
 }
 
 /* ==================== GRAFICO ==================== */
-canvas {
-  margin-top: 30px;
+.grafico-contenedor {
+  position: relative;
   width: 100%;
+  max-width: 600px;
   height: 300px;
+  margin: 30px auto 0 auto;
+}
+
+canvas {
+  width: 100% !important;
+  height: 100% !important;
 }
 
 @media (max-width: 600px) {
   header { font-size: 1.2em; }
   .gota { width: 100px; height: 130px; }
   .dashboard { padding: 20px; }
-  canvas { height: 250px; }
+  .grafico-contenedor { height: 250px; }
 }
 </style>
 </head>
@@ -188,7 +195,10 @@ canvas {
   <div id="comentario" class="comentario">Analizando estado de la planta...</div>
   <div id="fecha-ubicacion" class="fecha-ubicacion">Cargando fecha y ubicación...</div>
   <div id="ultima" class="actualizacion">Última actualización: --:--:--</div>
-  <canvas id="grafico"></canvas>
+
+  <div class="grafico-contenedor">
+    <canvas id="grafico"></canvas>
+  </div>
 </div>
 
 <script>
@@ -202,7 +212,6 @@ const humedadTexto = document.getElementById('humedad');
 const comentario = document.getElementById('comentario');
 const fechaUbicacion = document.getElementById('fecha-ubicacion');
 const ultima = document.getElementById('ultima');
-const graficoCanvas = document.getElementById('grafico');
 
 // ======= EFECTO DE LLUVIA =======
 const rainContainer = document.getElementById("rain");
@@ -218,8 +227,8 @@ for (let i = 0; i < numDrops; i++) {
 }
 
 // ======= GRAFICO =======
-const ctx = graficoCanvas.getContext("2d");
-const gradiente = ctx.createLinearGradient(0, 0, 0, 300);
+const graficoCanvas = document.getElementById('grafico').getContext('2d');
+const gradiente = graficoCanvas.createLinearGradient(0, 0, 0, 300);
 gradiente.addColorStop(0, "rgba(0,194,255,0.6)");
 gradiente.addColorStop(1, "rgba(0,194,255,0.1)");
 
@@ -240,7 +249,7 @@ const grafico = new Chart(graficoCanvas, {
   },
   options: {
     responsive: true,
-    maintainAspectRatio: false, // <--- Ajuste responsivo para móviles
+    maintainAspectRatio: false,
     scales: { 
       y: { beginAtZero: true, max: 100, grid: { color: "rgba(255,255,255,0.08)" } },
       x: { grid: { color: "rgba(255,255,255,0.08)" } }

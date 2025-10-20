@@ -164,14 +164,15 @@ header {
 /* ==================== GRAFICO ==================== */
 canvas {
   margin-top: 30px;
-  width: 100% !important;
-  height: 300px !important;
+  width: 100%;
+  height: 300px;
 }
 
 @media (max-width: 600px) {
   header { font-size: 1.2em; }
   .gota { width: 100px; height: 130px; }
   .dashboard { padding: 20px; }
+  canvas { height: 250px; }
 }
 </style>
 </head>
@@ -239,6 +240,7 @@ const grafico = new Chart(graficoCanvas, {
   },
   options: {
     responsive: true,
+    maintainAspectRatio: false, // <--- Ajuste responsivo para móviles
     scales: { 
       y: { beginAtZero: true, max: 100, grid: { color: "rgba(255,255,255,0.08)" } },
       x: { grid: { color: "rgba(255,255,255,0.08)" } }

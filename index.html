@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>🌿 Mi Plantita Habladora 🌧️</title>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <style>
@@ -37,11 +37,14 @@ header {
   font-weight: 600;
   position: sticky;
   top: 0;
+  z-index: 5;
 }
 .menu {
   display: flex;
-  gap: 15px;
+  gap: 10px;
   margin-top: 15px;
+  flex-wrap: wrap;
+  justify-content: center;
   z-index: 2;
 }
 .boton {
@@ -49,22 +52,20 @@ header {
   border: none;
   border-radius: 12px;
   color: white;
-  padding: 10px 20px;
+  padding: 10px 16px;
   font-size: 1em;
   cursor: pointer;
   transition: 0.3s;
   box-shadow: 0 0 10px rgba(0,153,255,0.3);
 }
-.boton:hover {
-  background: linear-gradient(135deg, #00ccff, #0088ff);
-  transform: scale(1.05);
-}
+.boton:hover { transform: scale(1.05); }
+
 .dashboard {
   background: rgba(255,255,255,0.07);
   backdrop-filter: blur(15px);
   border-radius: 20px;
   box-shadow: 0 0 20px rgba(0,0,0,0.4);
-  padding: 25px;
+  padding: 20px;
   margin: 25px auto;
   width: 90%;
   max-width: 600px;
@@ -73,8 +74,8 @@ header {
   border: 1px solid rgba(255,255,255,0.15);
 }
 .gota {
-  width: 120px;
-  height: 150px;
+  width: 100px;
+  height: 130px;
   background: radial-gradient(circle at 30% 30%, #33cfff, #0077cc 60%, #004b80);
   border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
   margin: 0 auto 10px auto;
@@ -88,32 +89,40 @@ header {
   font-weight: bold;
   box-shadow: 0 0 30px rgba(0,174,255,0.5), inset 0 0 18px rgba(255,255,255,0.3);
 }
-.carita { font-size: 2.2em; margin-bottom: 5px; }
-.humedad-texto { font-size: 1.5em; }
+.carita { font-size: 2em; margin-bottom: 5px; }
+.humedad-texto { font-size: 1.4em; }
 .comentario {
   margin-top: 10px;
-  font-size: 1.1em;
+  font-size: 1em;
   color: #a7f3ff;
   font-style: italic;
 }
 .info {
   margin-top: 15px;
-  font-size: 0.95em;
+  font-size: 0.9em;
   color: #9edaff;
   text-shadow: 0 0 3px rgba(0,255,255,0.4);
-}
-@keyframes float {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-12px); }
 }
 .grafico-contenedor {
   display: none;
   width: 100%;
   max-width: 600px;
-  height: 300px;
+  height: 250px;
   margin: 30px auto 0 auto;
 }
 canvas { width: 100% !important; height: 100% !important; }
+
+/* 📱 Adaptación para móviles */
+@media (max-width: 480px) {
+  header { font-size: 1.1em; padding: 10px 0; }
+  .boton { font-size: 0.9em; padding: 8px 12px; }
+  .gota { width: 85px; height: 110px; }
+  .carita { font-size: 1.8em; }
+  .humedad-texto { font-size: 1.2em; }
+  .comentario { font-size: 0.9em; }
+  .info { font-size: 0.8em; }
+  .grafico-contenedor { height: 200px; }
+}
 </style>
 </head>
 <body>
@@ -148,7 +157,6 @@ const apiKey = "KT8Z4PBWOXA399H0";
 
 let datosHumedad = [], tiempo = [];
 let vozListas = false;
-let ubicacionDetectada = false;
 
 // Elementos
 const gota = document.getElementById('gota');
@@ -160,7 +168,7 @@ const fechaTexto = document.getElementById('fecha');
 const horaTexto = document.getElementById('hora');
 const graficoContenedor = document.getElementById('grafico-contenedor');
 
-// Inicializa gráfico
+// Gráfico
 const ctx = document.getElementById('grafico').getContext('2d');
 const grad = ctx.createLinearGradient(0, 0, 0, 300);
 grad.addColorStop(0, "rgba(0,194,255,0.6)");
@@ -168,13 +176,22 @@ grad.addColorStop(1, "rgba(0,194,255,0.1)");
 const grafico = new Chart(ctx, {
   type: 'line',
   data: { labels: [], datasets: [{ label: 'Humedad (%)', data: [], borderWidth: 3, borderColor: '#00baff', backgroundColor: grad, tension: 0.35, fill: true }]},
-  options: { scales: { y: { beginAtZero: true, max: 100 } } }
+  options: { 
+    responsive: true,
+    maintainAspectRatio: false,
+    scales: { 
+      y: { beginAtZero: true, max: 100, ticks: { color: '#fff', font: { size: 12 } } },
+      x: { ticks: { color: '#ccc', font: { size: 10 } } }
+    },
+    plugins: {
+      legend: { labels: { color: '#fff', font: { size: 12 } } }
+    }
+  }
 });
 
-// Función principal
 async function activarPlanta() {
   inicializarVoz();
-  pedirUbicacion();
+  await pedirUbicacion();
   await obtenerHumedad();
 }
 
@@ -200,26 +217,29 @@ function actualizarFechaHora() {
   horaTexto.textContent = ahora.toLocaleTimeString();
 }
 
-// Ubicación (solo tras clic)
-function pedirUbicacion() {
+// Ubicación
+async function pedirUbicacion() {
   if (!navigator.geolocation) {
-    ubicacionTexto.textContent = "Geolocalización no soportada";
+    ubicacionTexto.textContent = "Geolocalización no soportada.";
     return;
   }
-  navigator.geolocation.getCurrentPosition(async pos => {
-    const { latitude, longitude } = pos.coords;
-    try {
-      const res = await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${latitude}&lon=${longitude}&format=json`);
-      const data = await res.json();
-      ubicacionTexto.textContent = data.address.city
-        ? `${data.address.city}, ${data.address.country}`
-        : `${data.display_name}`;
-      ubicacionDetectada = true;
-    } catch {
-      ubicacionTexto.textContent = "No se pudo obtener la ubicación.";
-    }
-  }, err => {
-    ubicacionTexto.textContent = "Permiso de ubicación denegado.";
+  return new Promise(resolve => {
+    navigator.geolocation.getCurrentPosition(async pos => {
+      const { latitude, longitude } = pos.coords;
+      try {
+        const res = await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${latitude}&lon=${longitude}&format=json`);
+        const data = await res.json();
+        ubicacionTexto.textContent = data.address.city
+          ? `${data.address.city}, ${data.address.country}`
+          : `${data.display_name}`;
+      } catch {
+        ubicacionTexto.textContent = "No se pudo obtener la ubicación.";
+      }
+      resolve();
+    }, () => {
+      ubicacionTexto.textContent = "Permiso de ubicación denegado.";
+      resolve();
+    }, { enableHighAccuracy: true, timeout: 8000 });
   });
 }
 

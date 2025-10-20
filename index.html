@@ -235,17 +235,34 @@ const grafico = new Chart(graficoCanvas, {
       backgroundColor: gradiente,
       tension: 0.35,
       fill: true,
-      pointRadius: 4
+      pointRadius: 6,        // para móvil: más fácil tocar
+      pointHoverRadius: 8
     }]
   },
   options: {
     responsive: true,
-    maintainAspectRatio: false, // <--- Ajuste responsivo para móviles
+    maintainAspectRatio: false,
+    interaction: {
+      mode: 'nearest',  // tooltip al punto más cercano
+      intersect: true,
+      axis: 'x'
+    },
+    plugins: {
+      tooltip: {
+        enabled: true,
+        usePointStyle: true,
+        callbacks: {
+          label: function(context) {
+            return ` ${context.dataset.label}: ${context.formattedValue}%`;
+          }
+        }
+      },
+      legend: { labels: { color: "#a7f3ff" } }
+    },
     scales: { 
       y: { beginAtZero: true, max: 100, grid: { color: "rgba(255,255,255,0.08)" } },
       x: { grid: { color: "rgba(255,255,255,0.08)" } }
-    },
-    plugins: { legend: { labels: { color: "#a7f3ff" } } }
+    }
   }
 });
 

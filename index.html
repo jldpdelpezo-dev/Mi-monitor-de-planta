@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Monitoreos de Humedad 🌱</title>
+<title>Monitoreo de Humedad 🌱</title>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <style>
 body {
@@ -235,34 +235,17 @@ const grafico = new Chart(graficoCanvas, {
       backgroundColor: gradiente,
       tension: 0.35,
       fill: true,
-      pointRadius: 6,        // para móvil: más fácil tocar
-      pointHoverRadius: 8
+      pointRadius: 4
     }]
   },
   options: {
     responsive: true,
-    maintainAspectRatio: false,
-    interaction: {
-      mode: 'nearest',  // tooltip al punto más cercano
-      intersect: true,
-      axis: 'x'
-    },
-    plugins: {
-      tooltip: {
-        enabled: true,
-        usePointStyle: true,
-        callbacks: {
-          label: function(context) {
-            return ` ${context.dataset.label}: ${context.formattedValue}%`;
-          }
-        }
-      },
-      legend: { labels: { color: "#a7f3ff" } }
-    },
+    maintainAspectRatio: false, // <--- Ajuste responsivo para móviles
     scales: { 
       y: { beginAtZero: true, max: 100, grid: { color: "rgba(255,255,255,0.08)" } },
       x: { grid: { color: "rgba(255,255,255,0.08)" } }
-    }
+    },
+    plugins: { legend: { labels: { color: "#a7f3ff" } } }
   }
 });
 
@@ -334,4 +317,3 @@ setInterval(() => {
 </script>
 </body>
 </html>
-

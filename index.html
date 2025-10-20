@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Monitoreo de Humedad 🌱</title>
+<title>🌿 Mi Plantita Habladora 🌧️</title>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <style>
 body {
@@ -20,8 +20,6 @@ body {
   overflow-x: hidden;
   position: relative;
 }
-
-/* 🌫️ Textura tipo niebla/puntos sutil */
 body::before {
   content: "";
   position: fixed;
@@ -32,128 +30,93 @@ body::before {
   z-index: 0;
 }
 
-/* ==================== EFECTO DE LLUVIA ==================== */
+/* 🌧️ Efecto lluvia */
 .rain {
   position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
-  pointer-events: none;
-  z-index: 1;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  overflow: hidden; pointer-events: none; z-index: 1;
 }
-
 .drop {
   position: absolute;
-  width: 1.5px;
-  height: 25px;
-  background: rgba(255, 255, 255, 0.4);
+  width: 1.5px; height: 25px;
+  background: rgba(255,255,255,0.4);
   border-radius: 50%;
   filter: blur(0.5px);
   opacity: 0.6;
   animation: rainFall linear infinite;
 }
-
 @keyframes rainFall {
   0% { transform: translateY(-10vh); opacity: 0.8; }
   100% { transform: translateY(110vh) translateX(2vw); opacity: 0; }
 }
 
-/* ==================== ENCABEZADO ==================== */
+/* Encabezado */
 header {
   width: 100%;
-  background: linear-gradient(90deg, #0055a5, #0088cc);
-  color: white;
-  text-align: center;
-  padding: 15px 0;
-  font-size: 1.4em;
-  font-weight: 600;
-  letter-spacing: 1px;
+  background: linear-gradient(90deg, #00baff, #0077cc);
+  color: white; text-align: center;
+  padding: 15px 0; font-size: 1.4em; font-weight: 600;
   box-shadow: 0 2px 8px rgba(0,0,0,0.4);
-  z-index: 2;
-  position: sticky;
-  top: 0;
+  z-index: 2; position: sticky; top: 0;
 }
 
-/* ==================== DASHBOARD ==================== */
+/* Botones menú */
+.menu {
+  display: flex; gap: 15px; margin-top: 15px; z-index: 2;
+}
+.boton {
+  background: linear-gradient(135deg, #0099ff, #0066cc);
+  border: none; border-radius: 12px; color: white;
+  padding: 10px 20px; font-size: 1em; cursor: pointer;
+  transition: 0.3s; box-shadow: 0 0 10px rgba(0,153,255,0.3);
+}
+.boton:hover {
+  background: linear-gradient(135deg, #00ccff, #0088ff);
+  transform: scale(1.05);
+}
+
+/* Panel principal */
 .dashboard {
-  background: rgba(255, 255, 255, 0.07);
+  background: rgba(255,255,255,0.07);
   backdrop-filter: blur(15px);
   border-radius: 20px;
   box-shadow: 0 0 20px rgba(0,0,0,0.4);
-  padding: 25px;
-  margin: 25px auto;
-  width: 90%;
-  max-width: 600px;
-  text-align: center;
-  z-index: 2;
+  padding: 25px; margin: 25px auto;
+  width: 90%; max-width: 600px;
+  text-align: center; z-index: 2;
   border: 1px solid rgba(255,255,255,0.15);
 }
 
-/* ==================== GOTA ==================== */
+/* Gota */
 .gota {
-  width: 120px;
-  height: 150px;
+  width: 120px; height: 150px;
   background: radial-gradient(circle at 30% 30%, #33cfff, #0077cc 60%, #004b80);
   border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
   margin: 0 auto 10px auto;
   position: relative;
   animation: float 2.5s ease-in-out infinite;
-  transition: background 0.6s ease, box-shadow 0.4s ease;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  color: white;
-  font-weight: bold;
-  box-shadow: 0 0 30px rgba(0, 174, 255, 0.5), inset 0 0 18px rgba(255, 255, 255, 0.3);
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  color: white; font-weight: bold;
+  box-shadow: 0 0 30px rgba(0,174,255,0.5), inset 0 0 18px rgba(255,255,255,0.3);
 }
-
 .gota::before {
-  content: "";
-  position: absolute;
-  top: 18%;
-  left: 25%;
-  width: 35%;
-  height: 25%;
-  background: rgba(255, 255, 255, 0.4);
-  border-radius: 50%;
-  filter: blur(3px);
+  content: ""; position: absolute;
+  top: 18%; left: 25%; width: 35%; height: 25%;
+  background: rgba(255,255,255,0.4);
+  border-radius: 50%; filter: blur(3px);
 }
-
-.gota::after {
-  content: "";
-  position: absolute;
-  bottom: 15%;
-  right: 20%;
-  width: 20%;
-  height: 15%;
-  background: rgba(255, 255, 255, 0.25);
-  border-radius: 50%;
-  filter: blur(2px);
-}
-
-.carita { font-size: 2em; margin-bottom: 5px; pointer-events: none; }
+.carita { font-size: 2.2em; margin-bottom: 5px; pointer-events: none; }
 .humedad-texto { font-size: 1.5em; pointer-events: none; }
 
-.comentario {
-  margin-top: 10px;
-  font-size: 1.1em;
-  color: #a7f3ff;
-  font-style: italic;
-}
+.comentario { margin-top: 10px; font-size: 1.1em; color: #a7f3ff; font-style: italic; }
 
-.fecha-ubicacion {
-  font-size: 0.9em;
-  margin-top: 8px;
-  color: #ccc;
-}
-
-.actualizacion {
-  font-size: 0.9em;
-  color: #66d1ff;
-  margin-top: 5px;
+.info {
+  margin-top: 15px;
+  font-size: 0.95em;
+  color: #9edaff;
+  text-shadow: 0 0 3px rgba(0,255,255,0.4);
 }
 
 @keyframes float {
@@ -161,19 +124,13 @@ header {
   50% { transform: translateY(-12px); }
 }
 
-/* ==================== GRAFICO ==================== */
+/* Gráfico */
 .grafico-contenedor {
-  position: relative;
-  width: 100%;
-  max-width: 600px;
-  height: 300px;
+  display: none;
+  width: 100%; max-width: 600px; height: 300px;
   margin: 30px auto 0 auto;
 }
-
-canvas {
-  width: 100% !important;
-  height: 100% !important;
-}
+canvas { width: 100% !important; height: 100% !important; }
 
 @media (max-width: 600px) {
   header { font-size: 1.2em; }
@@ -185,18 +142,27 @@ canvas {
 </head>
 <body>
 <div class="rain" id="rain"></div>
-<header>🌿 Humedad de la planta en Tiempo Real 🌧️</header>
+<header>🌱 ¡Hola! Soy tu plantita 🌧️</header>
+
+<div class="menu">
+  <button class="boton" onclick="mostrarGota()">🌿 Ver mi estado</button>
+  <button class="boton" onclick="mostrarGrafico()">📈 Ver mi historia</button>
+</div>
 
 <div class="dashboard">
   <div id="gota" class="gota">
     <div id="carita" class="carita">😊</div>
     <div id="humedad" class="humedad-texto">--%</div>
   </div>
-  <div id="comentario" class="comentario">Analizando estado de la planta...</div>
-  <div id="fecha-ubicacion" class="fecha-ubicacion">Cargando fecha y ubicación...</div>
-  <div id="ultima" class="actualizacion">Última actualización: --:--:--</div>
 
-  <div class="grafico-contenedor">
+  <div id="comentario" class="comentario">Analizando cómo me siento...</div>
+
+  <div class="info" id="info">
+    📍 <span id="ubicacion">Detectando ubicación...</span><br>
+    ⏰ <span id="fecha">--/--/----</span> — <span id="hora">--:--:--</span>
+  </div>
+
+  <div class="grafico-contenedor" id="grafico-contenedor">
     <canvas id="grafico"></canvas>
   </div>
 </div>
@@ -204,53 +170,65 @@ canvas {
 <script>
 const canal = 3122727;
 const apiKey = "KT8Z4PBWOXA399H0";
-let datosHumedad = [];
-let tiempo = [];
+let datosHumedad = [], tiempo = [];
+
 const gota = document.getElementById('gota');
 const carita = document.getElementById('carita');
 const humedadTexto = document.getElementById('humedad');
 const comentario = document.getElementById('comentario');
-const fechaUbicacion = document.getElementById('fecha-ubicacion');
-const ultima = document.getElementById('ultima');
+const graficoContenedor = document.getElementById('grafico-contenedor');
+const ubicacionTexto = document.getElementById('ubicacion');
+const fechaTexto = document.getElementById('fecha');
+const horaTexto = document.getElementById('hora');
 
-// ======= EFECTO DE LLUVIA =======
-const rainContainer = document.getElementById("rain");
-const numDrops = 80;
-for (let i = 0; i < numDrops; i++) {
+// 🌧️ Efecto lluvia
+for (let i = 0; i < 80; i++) {
   const drop = document.createElement("div");
   drop.classList.add("drop");
   drop.style.left = Math.random() * 100 + "vw";
   drop.style.animationDuration = (1 + Math.random() * 2) + "s";
   drop.style.animationDelay = Math.random() * 4 + "s";
   drop.style.height = 15 + Math.random() * 15 + "px";
-  rainContainer.appendChild(drop);
+  document.getElementById("rain").appendChild(drop);
 }
 
-// ======= GRAFICO =======
-const graficoCanvas = document.getElementById('grafico').getContext('2d');
-const gradiente = graficoCanvas.createLinearGradient(0, 0, 0, 300);
-gradiente.addColorStop(0, "rgba(0,194,255,0.6)");
-gradiente.addColorStop(1, "rgba(0,194,255,0.1)");
+// 🕓 Actualizar fecha/hora
+function actualizarFechaHora() {
+  const ahora = new Date();
+  fechaTexto.textContent = ahora.toLocaleDateString();
+  horaTexto.textContent = ahora.toLocaleTimeString();
+}
 
-const grafico = new Chart(graficoCanvas, {
+// 📍 Obtener ubicación
+if (navigator.geolocation) {
+  navigator.geolocation.getCurrentPosition(async pos => {
+    const { latitude, longitude } = pos.coords;
+    try {
+      const res = await fetch(`https://geocode.xyz/${latitude},${longitude}?geoit=json`);
+      const data = await res.json();
+      ubicacionTexto.textContent = `${data.city || "Ubicación desconocida"}, ${data.country || ""}`;
+    } catch {
+      ubicacionTexto.textContent = "No se pudo obtener la ubicación.";
+    }
+  });
+}
+
+// 📊 Gráfico
+const ctx = document.getElementById('grafico').getContext('2d');
+const grad = ctx.createLinearGradient(0, 0, 0, 300);
+grad.addColorStop(0, "rgba(0,194,255,0.6)");
+grad.addColorStop(1, "rgba(0,194,255,0.1)");
+const grafico = new Chart(ctx, {
   type: 'line',
-  data: {
-    labels: [],
-    datasets: [{
-      label: 'Historial de Humedad (%)',
-      data: [],
-      borderWidth: 3,
-      borderColor: '#00baff',
-      backgroundColor: gradiente,
-      tension: 0.35,
-      fill: true,
-      pointRadius: 4
-    }]
-  },
+  data: { labels: [], datasets: [{
+    label: 'Humedad (%)',
+    data: [],
+    borderWidth: 3, borderColor: '#00baff',
+    backgroundColor: grad, tension: 0.35, fill: true, pointRadius: 4
+  }]},
   options: {
-    responsive: true,
-    maintainAspectRatio: false,
-    scales: { 
+    responsive: true, maintainAspectRatio: false,
+    scales: {
       y: { beginAtZero: true, max: 100, grid: { color: "rgba(255,255,255,0.08)" } },
       x: { grid: { color: "rgba(255,255,255,0.08)" } }
     },
@@ -258,71 +236,83 @@ const grafico = new Chart(graficoCanvas, {
   }
 });
 
-// ======= FUNCIONES =======
+// 🌡️ Leer datos de ThingSpeak
 async function obtenerHumedad() {
   try {
     const res = await fetch(`https://api.thingspeak.com/channels/${canal}/fields/4.json?results=10&api_key=${apiKey}`);
     const data = await res.json();
     const feeds = data.feeds;
     if (feeds.length > 0) {
-      datosHumedad = feeds.map(f => parseFloat(f[`field4`]));
+      datosHumedad = feeds.map(f => parseFloat(f.field4));
       tiempo = feeds.map(f => new Date(f.created_at).toLocaleTimeString());
       const ultimaH = datosHumedad[datosHumedad.length - 1];
       actualizarGota(ultimaH);
       actualizarGrafico();
-      ultima.textContent = "Última actualización: " + new Date().toLocaleTimeString();
+      actualizarFechaHora();
     }
   } catch (e) { console.error("Error al leer datos", e); }
 }
 
+// 💧 Reacción de la gota
 function actualizarGota(h) {
-  humedadTexto.textContent = `${h.toFixed(1)}%`;
+  humedadTexto.textContent = `${h.toFixed(0)}%`;
+
   if (h > 80) {
     gota.style.background = "linear-gradient(135deg, #007bff, #0044cc)";
     carita.textContent = "😅";
-    comentario.textContent = "Demasiada humedad. Evita regar la planta.";
+    comentario.textContent = "🌧 ¡Tengo demasiada agua!";
+    hablar("Tengo demasiada agua, no me pongas más.");
   } else if (h > 50) {
     gota.style.background = "linear-gradient(135deg, #00baff, #0077cc)";
     carita.textContent = "😊";
-    comentario.textContent = "La planta está bien hidratada 🌿";
+    comentario.textContent = "🌿 ¡Estoy feliz y fresquita! 💚";
+    hablar("Hola, estoy bien de humedad, por ahora no es hora de regarme.");
   } else if (h > 30) {
     gota.style.background = "linear-gradient(135deg, #ffaa00, #ff8800)";
     carita.textContent = "😐";
-    comentario.textContent = "Comienza a necesitar agua 💧";
+    comentario.textContent = "💧 Tengo sed... un poco de agua estaría bien.";
+    hablar("Tengo un poquito de sed, podrías regarme pronto.");
   } else {
     gota.style.background = "linear-gradient(135deg, #ff4444, #cc0000)";
     carita.textContent = "🥵";
-    comentario.textContent = "¡La planta está muy seca! Riégala pronto 🚿";
+    comentario.textContent = "😢 ¡Ayuda! ¡Dame agüita ya!";
+    hablar("Estoy muy seca, por favor dame agüita ya.");
   }
 }
 
+// 📈 Actualizar gráfico
 function actualizarGrafico() {
   grafico.data.labels = tiempo;
   grafico.data.datasets[0].data = datosHumedad;
   grafico.update();
 }
 
-function actualizarFechaUbicacion() {
-  const fecha = new Date().toLocaleString();
-  if (navigator.geolocation) {
-    navigator.geolocation.getCurrentPosition(pos => {
-      const lat = pos.coords.latitude.toFixed(4);
-      const lon = pos.coords.longitude.toFixed(4);
-      fechaUbicacion.textContent = `Fecha: ${fecha} | Lat: ${lat}, Lon: ${lon}`;
-    }, () => {
-      fechaUbicacion.textContent = `Fecha: ${fecha} | Ubicación no disponible`;
-    });
-  } else {
-    fechaUbicacion.textContent = `Fecha: ${fecha} | Ubicación no disponible`;
+// 🎤 Voz
+function hablar(texto) {
+  if ('speechSynthesis' in window) {
+    const voz = new SpeechSynthesisUtterance(texto);
+    voz.lang = 'es-ES';
+    const voces = speechSynthesis.getVoices();
+    const vozElegida = voces.find(v => v.lang.startsWith('es') || v.name.includes('Google español'));
+    if (vozElegida) voz.voice = vozElegida;
+    voz.pitch = 1.3;
+    voz.rate = 1;
+    speechSynthesis.cancel(); // Evita superposición
+    speechSynthesis.speak(voz);
   }
 }
 
+// 🔘 Mostrar paneles
+function mostrarGrafico() {
+  graficoContenedor.style.display = "block";
+}
+function mostrarGota() {
+  graficoContenedor.style.display = "none";
+}
+
+// 🔁 Ciclo automático
 obtenerHumedad();
-actualizarFechaUbicacion();
-setInterval(() => {
-  obtenerHumedad();
-  actualizarFechaUbicacion();
-}, 10000);
+setInterval(obtenerHumedad, 10000);
 </script>
 </body>
 </html>

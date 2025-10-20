@@ -6,7 +6,6 @@
 <title>🌿 Mi Plantita Habladora 🌧️</title>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <style>
-/* ======== ESTILOS IGUALES QUE ANTES ======== */
 body {
   margin: 0;
   font-family: 'Poppins', sans-serif;
@@ -130,7 +129,7 @@ canvas { width: 100% !important; height: 100% !important; }
 <header>🌱 ¡Hola! Soy tu plantita 🌧️</header>
 
 <div class="menu">
-  <button class="boton" onclick="inicializarVoz(); mostrarGota()">🌿 Ver mi estado</button>
+  <button class="boton" onclick="inicializarVoz(); obtenerHumedad(); mostrarGota()">🌿 Ver mi estado</button>
   <button class="boton" onclick="mostrarGrafico()">📈 Ver mi historia</button>
 </div>
 
@@ -166,7 +165,7 @@ const ubicacionTexto = document.getElementById('ubicacion');
 const fechaTexto = document.getElementById('fecha');
 const horaTexto = document.getElementById('hora');
 
-// 🌧️ Efecto lluvia
+// 🌧️ Lluvia animada
 for (let i = 0; i < 80; i++) {
   const drop = document.createElement("div");
   drop.classList.add("drop");
@@ -177,27 +176,33 @@ for (let i = 0; i < 80; i++) {
   document.getElementById("rain").appendChild(drop);
 }
 
-// 🕓 Actualizar fecha/hora
+// 🕓 Fecha y hora
 function actualizarFechaHora() {
   const ahora = new Date();
   fechaTexto.textContent = ahora.toLocaleDateString();
   horaTexto.textContent = ahora.toLocaleTimeString();
 }
 
-// 📍 Obtener ubicación sin límites
-if (navigator.geolocation) {
-  navigator.geolocation.getCurrentPosition(async pos => {
-    const { latitude, longitude } = pos.coords;
-    try {
-      const res = await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${latitude}&lon=${longitude}&format=json`);
-      const data = await res.json();
-      ubicacionTexto.textContent = data.address.city
-        ? `${data.address.city}, ${data.address.country}`
-        : `${data.display_name}`;
-    } catch {
-      ubicacionTexto.textContent = "No se pudo obtener la ubicación.";
-    }
-  });
+// 📍 Ubicación compatible iOS (requiere HTTPS)
+function obtenerUbicacion() {
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(async pos => {
+      const { latitude, longitude } = pos.coords;
+      try {
+        const res = await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${latitude}&lon=${longitude}&format=json`);
+        const data = await res.json();
+        ubicacionTexto.textContent = data.address.city
+          ? `${data.address.city}, ${data.address.country}`
+          : data.display_name || "Ubicación detectada.";
+      } catch {
+        ubicacionTexto.textContent = "No se pudo obtener ubicación.";
+      }
+    }, () => {
+      ubicacionTexto.textContent = "Permiso de ubicación denegado.";
+    });
+  } else {
+    ubicacionTexto.textContent = "Geolocalización no soportada.";
+  }
 }
 
 // 📊 Gráfico
@@ -237,10 +242,12 @@ async function obtenerHumedad() {
       actualizarGrafico();
       actualizarFechaHora();
     }
-  } catch (e) { console.error("Error al leer datos", e); }
+  } catch (e) {
+    console.error("Error al leer datos", e);
+  }
 }
 
-// 💧 Reacción de la gota
+// 💧 Expresiones de la gota
 function actualizarGota(h) {
   humedadTexto.textContent = `${h.toFixed(0)}%`;
 
@@ -253,7 +260,7 @@ function actualizarGota(h) {
     gota.style.background = "linear-gradient(135deg, #00baff, #0077cc)";
     carita.textContent = "😊";
     comentario.textContent = "🌿 ¡Estoy feliz y fresquita! 💚";
-    hablar("Hola, estoy bien de humedad, por ahora no es hora de regarme.");
+    hablar("Hola, estoy bien de humedad, no necesito agua.");
   } else if (h > 30) {
     gota.style.background = "linear-gradient(135deg, #ffaa00, #ff8800)";
     carita.textContent = "😐";
@@ -274,24 +281,27 @@ function actualizarGrafico() {
   grafico.update();
 }
 
-// 🎤 Voz adaptada a móviles
+// 🎤 Voz compatible iOS
 let vozListas = false;
 function inicializarVoz() {
-  if (!vozListas) {
-    speechSynthesis.getVoices(); // Inicializa voces en algunos móviles
-    vozListas = true;
+  if ('speechSynthesis' in window) {
+    const voces = speechSynthesis.getVoices();
+    if (voces.length === 0) {
+      speechSynthesis.onvoiceschanged = () => { vozListas = true; };
+    } else { vozListas = true; }
   }
+  obtenerUbicacion(); // Pedir ubicación después del toque
 }
 
 function hablar(texto) {
-  if (!vozListas) return; // Espera interacción
+  if (!vozListas) return;
   if ('speechSynthesis' in window) {
     const voz = new SpeechSynthesisUtterance(texto);
     voz.lang = 'es-ES';
     const voces = speechSynthesis.getVoices();
-    const vozElegida = voces.find(v => v.lang.startsWith('es') || v.name.includes('Google español'));
+    const vozElegida = voces.find(v => v.lang.startsWith('es'));
     if (vozElegida) voz.voice = vozElegida;
-    voz.pitch = 1.2;
+    voz.pitch = 1.1;
     voz.rate = 1;
     speechSynthesis.cancel();
     speechSynthesis.speak(voz);
@@ -299,15 +309,10 @@ function hablar(texto) {
 }
 
 // 🔘 Mostrar paneles
-function mostrarGrafico() {
-  graficoContenedor.style.display = "block";
-}
-function mostrarGota() {
-  graficoContenedor.style.display = "none";
-}
+function mostrarGrafico() { graficoContenedor.style.display = "block"; }
+function mostrarGota() { graficoContenedor.style.display = "none"; }
 
 // 🔁 Ciclo automático
-obtenerHumedad();
 setInterval(obtenerHumedad, 10000);
 </script>
 </body>

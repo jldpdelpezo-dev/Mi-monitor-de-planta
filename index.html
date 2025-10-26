@@ -118,8 +118,8 @@ canvas{width:100%!important;height:100%!important;}
 </section>
 
 <div class="info-footer">
-  <div id="fecha-ubicacion">Cargando fecha...</div>
-  <div id="ultima">Cargando ubicación...</div>
+  <div id="fecha-hora">Cargando fecha...</div>
+  <div id="ultima-actualizacion">Cargando última actualización...</div>
 </div>
 
 <script>
@@ -131,8 +131,8 @@ const gota = document.getElementById('gota');
 const carita = document.getElementById('carita');
 const humedadTexto = document.getElementById('humedad');
 const comentario = document.getElementById('comentario');
-const fechaUbicacion = document.getElementById('fecha-ubicacion');
-const ultima = document.getElementById('ultima');
+const fechaHora = document.getElementById('fecha-hora');
+const ultimaActualizacion = document.getElementById('ultima-actualizacion');
 const rainContainer = document.getElementById("rain");
 const cloudsContainer = document.getElementById("clouds");
 
@@ -276,22 +276,27 @@ async function obtenerHumedad(){
     }catch(e){console.error("Error al leer datos",e);}
 }
 
-// --- Fecha y ubicación responsive ---
-function actualizarFechaUbicacion(){
-    const fecha=new Date().toLocaleString();
-    if(navigator.geolocation){
-        navigator.geolocation.getCurrentPosition(pos=>{
-            const lat=pos.coords.latitude.toFixed(4);
-            const lon=pos.coords.longitude.toFixed(4);
-            fechaUbicacion.textContent=`Fecha: ${fecha}`;
-            ultima.textContent=`Lat: ${lat}, Lon: ${lon}`;
-        },()=>{
-            fechaUbicacion.textContent=`Fecha: ${fecha}`;
-            ultima.textContent=`Ubicación no disponible`;
-        });
-    } else {
-        fechaUbicacion.textContent=`Fecha: ${fecha}`;
-        ultima.textContent=`Ubicación no disponible`;
+// --- Fecha y última actualización ---
+function actualizarFechaHora(){
+    const fecha = new Date();
+    const fechaStr = fecha.toLocaleString();
+    fechaHora.textContent = `Fecha y hora: ${fechaStr}`;
+}
+
+async function actualizarUltimaActualizacion(){
+    try {
+        const res = await fetch(`https://api.thingspeak.com/channels/${canal}/fields/4.json?results=1&api_key=${apiKey}`);
+        const data = await res.json();
+        if(data.feeds.length > 0){
+            const ultima = new Date(data.feeds[0].created_at);
+            const ultimaStr = ultima.toLocaleString();
+            ultimaActualizacion.textContent = `Última actualización: ${ultimaStr}`;
+        } else {
+            ultimaActualizacion.textContent = `Última actualización: no disponible`;
+        }
+    } catch(e){
+        console.error("Error al obtener última actualización", e);
+        ultimaActualizacion.textContent = `Última actualización: error`;
     }
 }
 
@@ -306,10 +311,11 @@ btnGraficas.onclick=()=>{btnGraficas.classList.add('active');btnEstado.classList
 // --- Inicialización ---
 actualizarFondo();
 obtenerHumedad();
-actualizarFechaUbicacion();
+actualizarFechaHora();
+actualizarUltimaActualizacion();
 
-// --- Repetición cada 10 segundos para datos ---
-setInterval(()=>{actualizarFondo();obtenerHumedad();actualizarFechaUbicacion();},10000);
+// --- Repetición cada 10 segundos para datos y fondo ---
+setInterval(()=>{actualizarFondo();obtenerHumedad();actualizarUltimaActualizacion();},10000);
 
 // --- Repetición cada 1 minuto para hablar ---
 setInterval(()=>{
@@ -318,6 +324,9 @@ setInterval(()=>{
         actualizarGota(ultimaH);
     }
 },60000);
+
+// --- Actualizar hora cada segundo ---
+setInterval(actualizarFechaHora, 1000);
 </script>
 </body>
 </html>

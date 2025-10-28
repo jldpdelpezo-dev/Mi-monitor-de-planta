@@ -3,89 +3,204 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Monitoreo de Humedad 🌱</title>
+<title>Monitoreo de Planta 🌱</title>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <style>
 body {
-  margin:0;
-  font-family:'Poppins',sans-serif;
-  color:#e8f6ff;
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  min-height:100vh;
-  overflow:hidden;
-  position:relative;
+  margin: 0;
+  font-family: 'Poppins', sans-serif;
+  color: #e8f6ff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 100vh;
+  overflow-x: hidden;
+  position: relative;
   transition: background 1s ease;
 }
 body::before {
-  content:"";
-  position:fixed;
-  inset:0;
-  background-image:radial-gradient(rgba(255,255,255,0.05) 1px, transparent 1px);
-  background-size:70px 70px;
-  opacity:0.25;
-  z-index:0;
+  content: "";
+  position: fixed;
+  inset: 0;
+  background-image: radial-gradient(rgba(255,255,255,0.05) 1px, transparent 1px);
+  background-size: 70px 70px;
+  opacity: 0.25;
+  z-index: 0;
 }
+
 /* --- Lluvia --- */
-.rain{position:fixed;top:0;left:0;width:100%;height:100%;overflow:hidden;pointer-events:none;z-index:1;}
-.drop{position:absolute;width:1.5px;height:25px;background:rgba(255,255,255,0.4);border-radius:50%;filter:blur(0.5px);opacity:0.6;animation:rainFall linear infinite;}
-@keyframes rainFall{0%{transform:translateY(-10vh);opacity:0.8;}100%{transform:translateY(110vh) translateX(2vw);opacity:0;}}
+.rain {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 1;
+}
+.drop {
+  position: absolute;
+  width: 1.5px; height: 25px;
+  background: rgba(255,255,255,0.4);
+  border-radius: 50%;
+  filter: blur(0.5px);
+  opacity: 0.6;
+  animation: rainFall linear infinite;
+}
+@keyframes rainFall {
+  0% { transform: translateY(-10vh); opacity: 0.8; }
+  100% { transform: translateY(110vh) translateX(2vw); opacity: 0; }
+}
 
 /* --- Nubes --- */
-.clouds {position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;overflow:hidden;z-index:0;}
-.cloud {position:absolute;display:flex;flex-direction:row;align-items:flex-end;pointer-events:none;}
-.cloud div {background: linear-gradient(to bottom, rgba(255,255,255,0.9), rgba(255,255,255,0.6)); border-radius:50%; margin-left:-20px; filter: blur(6px);}
+.clouds {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  pointer-events: none;
+  overflow: hidden;
+  z-index: 0;
+}
+.cloud { position: absolute; display: flex; align-items: flex-end; pointer-events: none; }
+.cloud div {
+  background: linear-gradient(to bottom, rgba(255,255,255,0.9), rgba(255,255,255,0.6));
+  border-radius: 50%;
+  margin-left: -20px;
+  filter: blur(6px);
+}
 
 /* --- Header y menú --- */
-header{width:100%;background:linear-gradient(90deg,#0055a5,#0088cc);color:white;text-align:center;padding:15px 0;font-size:1.4em;font-weight:600;letter-spacing:1px;box-shadow:0 2px 8px rgba(0,0,0,0.4);z-index:2;position:sticky;top:0;}
-nav{display:flex;justify-content:center;margin-top:15px;gap:15px;z-index:2;}
-nav button{background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.25);color:#a7f3ff;padding:10px 20px;border-radius:12px;font-size:1em;cursor:pointer;transition:all 0.3s ease;}
-nav button.active{background:linear-gradient(90deg,#00baff,#0077cc);color:white;box-shadow:0 0 10px rgba(0,174,255,0.6);}
+header {
+  width: 100%;
+  background: linear-gradient(90deg, #0055a5, #0088cc);
+  color: white;
+  text-align: center;
+  padding: 15px 0;
+  font-size: 1.4em;
+  font-weight: 600;
+  letter-spacing: 1px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+  z-index: 2;
+  position: sticky;
+  top: 0;
+}
+nav {
+  display: flex;
+  justify-content: center;
+  margin-top: 15px;
+  gap: 15px;
+  z-index: 2;
+  flex-wrap: wrap;
+}
+nav button {
+  background: rgba(255,255,255,0.1);
+  border: 1px solid rgba(255,255,255,0.25);
+  color: #a7f3ff;
+  padding: 10px 20px;
+  border-radius: 12px;
+  font-size: 1em;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+nav button.active {
+  background: linear-gradient(90deg,#00baff,#0077cc);
+  color: white;
+  box-shadow: 0 0 10px rgba(0,174,255,0.6);
+}
 
 /* --- Secciones --- */
-section{display:none;animation:fadeIn 0.6s ease forwards;width:90%;max-width:600px;margin-top:20px;z-index:2;}
-section.active{display:block;}
-@keyframes fadeIn{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
+section {
+  display: none;
+  animation: fadeIn 0.6s ease forwards;
+  width: 90%;
+  max-width: 700px;
+  margin-top: 20px;
+  z-index: 2;
+}
+section.active { display: block; }
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
 
-/* --- Dashboard y gota --- */
-.dashboard{background:rgba(255,255,255,0.07);backdrop-filter:blur(15px);border-radius:20px;box-shadow:0 0 20px rgba(0,0,0,0.4);padding:25px;text-align:center;border:1px solid rgba(255,255,255,0.15);}
-.gota{width:180px;height:220px;background:radial-gradient(circle at 30% 30%,#33cfff,#0077cc 60%,#004b80);border-radius:50% 50% 50% 50%/60% 60% 40% 40%;margin:40px auto;position:relative;animation:float 2.5s ease-in-out infinite;display:flex;flex-direction:column;align-items:center;justify-content:center;color:white;font-weight:bold;box-shadow:0 0 40px rgba(0,174,255,0.5), inset 0 0 18px rgba(255,255,255,0.3);}
-@keyframes float{0%,100%{transform:translateY(0);}50%{transform:translateY(-15px);}}
-.gota::before{content:"";position:absolute;top:18%;left:25%;width:35%;height:25%;background:rgba(255,255,255,0.4);border-radius:50%;filter:blur(3px);}
-.gota::after{content:"";position:absolute;bottom:15%;right:20%;width:20%;height:15%;background:rgba(255,255,255,0.25);border-radius:50%;filter:blur(2px);}
-.carita{font-size:2.5em;margin-bottom:5px;}
-.humedad-texto{font-size:2em;}
-.comentario{margin-top:10px;font-size:1.2em;color:#a7f3ff;font-style:inherit;}
+/* --- Dashboard y planta --- */
+.dashboard {
+  background: rgba(255,255,255,0.07);
+  backdrop-filter: blur(15px);
+  border-radius: 20px;
+  box-shadow: 0 0 20px rgba(0,0,0,0.4);
+  padding: 25px;
+  text-align: center;
+  border: 1px solid rgba(255,255,255,0.15);
+}
+#imagen-planta {
+  width: 230px; /* 🌱 más grande */
+  max-width: 90%;
+  height: auto;
+  transition: opacity 0.8s ease, transform 1s ease;
+  filter: drop-shadow(0 0 15px rgba(0,255,128,0.3));
+  background: none;
+  border: none;
+}
+.flotando { animation: flotar 4s ease-in-out infinite; }
+@keyframes flotar {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-12px); }
+}
+.humedad-texto {
+  font-size: 2.2em;
+  font-weight: bold;
+  margin-top: 10px;
+}
+.comentario {
+  margin-top: 10px;
+  font-size: 1.3em;
+  color: #a7f3ff;
+  min-height: 40px;
+}
 
 /* --- Fecha y última actualización --- */
-.info-footer{
-  position:fixed;
-  bottom:10px;
-  width:calc(100% - 20px);
-  display:flex;
-  justify-content:space-between;
-  padding:5px 10px;
-  background:rgba(20,20,20,0.15);
-  border-radius:8px;
-  font-size:0.9em;
-  z-index:3;
+.info-footer {
+  position: fixed;
+  bottom: 10px;
+  width: calc(100% - 20px);
+  display: flex;
+  justify-content: space-between;
+  padding: 5px 10px;
+  background: rgba(20,20,20,0.15);
+  border-radius: 8px;
+  font-size: 0.9em;
+  z-index: 3;
 }
-@media (max-width:600px){
-  .info-footer{flex-direction:column;gap:5px;}
+@media (max-width: 600px) {
+  .info-footer {
+    flex-direction: column;
+    gap: 5px;
+    font-size: 0.85em;
+    text-align: center;
+  }
 }
 
 /* --- Gráfico --- */
-.grafico-contenedor{position:relative;width:100%;height:300px;margin-top:25px;}
-canvas{width:100%!important;height:100%!important;}
+.grafico-contenedor {
+  position: relative;
+  width: 100%;
+  height: 420px; /* más grande */
+  margin-top: 25px;
+}
+canvas {
+  width: 100% !important;
+  height: 100% !important;
+  border-radius: 12px;
+}
 
 /* --- Ajustes móviles --- */
-@media (max-width:600px){
-    header{font-size:1.2em;}
-    .gota{width:150px;height:180px;}
-    .carita{font-size:2em;}
-    .humedad-texto{font-size:1.5em;}
-    nav button{padding:8px 16px;font-size:0.9em;}
+@media (max-width: 600px) {
+  header { font-size: 1.2em; }
+  #imagen-planta { width: 190px; } /* más grande en móvil también */
+  .humedad-texto { font-size: 1.6em; }
+  .comentario { font-size: 1.1em; }
+  nav button { padding: 8px 14px; font-size: 0.9em; }
+  .grafico-contenedor { height: 350px; }
 }
 </style>
 </head>
@@ -93,7 +208,7 @@ canvas{width:100%!important;height:100%!important;}
 <div class="rain" id="rain"></div>
 <div class="clouds" id="clouds"></div>
 
-<header>🌿 Monitoreo de Humedad 🌧️</header>
+<header>🌿 Monitoreo de Planta 🌧️</header>
 <nav>
   <button id="btnEstado" class="active">Ver Estado</button>
   <button id="btnGraficas">Ver Gráficas</button>
@@ -101,11 +216,9 @@ canvas{width:100%!important;height:100%!important;}
 
 <section id="estado" class="active">
   <div class="dashboard">
-    <div id="gota" class="gota">
-      <div id="carita" class="carita">😊</div>
-      <div id="humedad" class="humedad-texto">--%</div>
-    </div>
-    <div id="comentario" class="comentario">Analizando estado de la planta...</div>
+    <img id="imagen-planta" alt="Estado de la planta" class="flotando">
+    <div id="humedad" class="humedad-texto">--%</div>
+    <div id="comentario" class="comentario">Cargando datos...</div>
   </div>
 </section>
 
@@ -123,12 +236,10 @@ canvas{width:100%!important;height:100%!important;}
 </div>
 
 <script>
-// --- Configuración ---
 const canal = 3122727;
 const apiKey = "KT8Z4PBWOXA399H0";
-let datosHumedad=[], tiempo=[];
-const gota = document.getElementById('gota');
-const carita = document.getElementById('carita');
+let datosHumedad = [];
+const imagenPlanta = document.getElementById('imagen-planta');
 const humedadTexto = document.getElementById('humedad');
 const comentario = document.getElementById('comentario');
 const fechaHora = document.getElementById('fecha-hora');
@@ -136,73 +247,105 @@ const ultimaActualizacion = document.getElementById('ultima-actualizacion');
 const rainContainer = document.getElementById("rain");
 const cloudsContainer = document.getElementById("clouds");
 
-let estadoTexto="";
-
-// --- Lluvia ---
+// --- Fondo y animaciones ---
 function crearLluvia(cantidad){
-    rainContainer.innerHTML="";
-    for(let i=0;i<cantidad;i++){
-        const drop=document.createElement("div");
-        drop.classList.add("drop");
-        drop.style.left=Math.random()*100+"vw";
-        drop.style.animationDuration=(1+Math.random()*2)+"s";
-        drop.style.animationDelay=Math.random()*4+"s";
-        drop.style.height=15+Math.random()*15+"px";
-        rainContainer.appendChild(drop);
-    }
+  rainContainer.innerHTML="";
+  for(let i=0;i<cantidad;i++){
+    const drop=document.createElement("div");
+    drop.classList.add("drop");
+    drop.style.left=Math.random()*100+"vw";
+    drop.style.animationDuration=(1+Math.random()*2)+"s";
+    drop.style.animationDelay=Math.random()*4+"s";
+    drop.style.height=15+Math.random()*15+"px";
+    rainContainer.appendChild(drop);
+  }
 }
 
-// --- Nubes ---
 let nubes=[];
 function crearNube(capa, xInicial){
-    const cloud = document.createElement("div");
-    cloud.classList.add("cloud");
-    cloud.style.top = Math.random()*40 + "vh";
-    cloud.style.opacity = capa.opacidad;
-    cloud.style.transform = `scale(${capa.escala})`;
-    cloud.style.left = xInicial + "px";
-    const partes = 3 + Math.floor(Math.random()*3);
-    for(let j=0;j<partes;j++){
-        const puff=document.createElement("div");
-        let w=60+Math.random()*80;
-        let h=w/2;
-        puff.style.width=w+"px";
-        puff.style.height=h+"px";
-        cloud.appendChild(puff);
-    }
-    cloudsContainer.appendChild(cloud);
-    const cloudDup = cloud.cloneNode(true);
-    cloudsContainer.appendChild(cloudDup);
-    nubes.push({el:cloud, dup:cloudDup, velocidad:capa.velocidad});
+  const cloud=document.createElement("div");
+  cloud.classList.add("cloud");
+  cloud.style.top=Math.random()*40+"vh";
+  cloud.style.opacity=capa.opacidad;
+  cloud.style.transform=`scale(${capa.escala})`;
+  cloud.style.left=xInicial+"px";
+  const partes=3+Math.floor(Math.random()*3);
+  for(let j=0;j<partes;j++){
+    const puff=document.createElement("div");
+    let w=60+Math.random()*80;
+    let h=w/2;
+    puff.style.width=w+"px";
+    puff.style.height=h+"px";
+    cloud.appendChild(puff);
+  }
+  cloudsContainer.appendChild(cloud);
+  const cloudDup=cloud.cloneNode(true);
+  cloudsContainer.appendChild(cloudDup);
+  nubes.push({el:cloud, dup:cloudDup, velocidad:capa.velocidad});
 }
 function crearNubesContinuas(){
-    cloudsContainer.innerHTML="";
-    nubes=[];
-    const isMobile = window.innerWidth <= 600;
-    const capas=[
-        {cantidad:isMobile?2:3, velocidad:isMobile?0.07:0.12, opacidad:0.6, escala:isMobile?0.8:1},
-        {cantidad:isMobile?2:4, velocidad:isMobile?0.05:0.09, opacidad:0.8, escala:isMobile?1:1.2},
-        {cantidad:isMobile?1:3, velocidad:isMobile?0.03:0.06, opacidad:1, escala:isMobile?1.2:1.5}
-    ];
-    capas.forEach(capa=>{
-        for(let i=0;i<capa.cantidad;i++){
-            crearNube(capa, Math.random()*window.innerWidth*2 - window.innerWidth);
-        }
-    });
+  cloudsContainer.innerHTML="";
+  nubes=[];
+  const isMobile=window.innerWidth<=600;
+  const capas=[
+    {cantidad:isMobile?2:3, velocidad:isMobile?0.07:0.12, opacidad:0.6, escala:isMobile?0.8:1},
+    {cantidad:isMobile?2:4, velocidad:isMobile?0.05:0.09, opacidad:0.8, escala:isMobile?1:1.2},
+    {cantidad:isMobile?1:3, velocidad:isMobile?0.03:0.06, opacidad:1, escala:isMobile?1.2:1.5}
+  ];
+  capas.forEach(capa=>{
+    for(let i=0;i<capa.cantidad;i++){
+      crearNube(capa, Math.random()*window.innerWidth*2-window.innerWidth);
+    }
+  });
 }
 function moverNubes(){
-    nubes.forEach(n=>{
-        let x=parseFloat(n.el.style.left);
-        let xDup=parseFloat(n.dup.style.left);
-        x += n.velocidad*2;
-        xDup += n.velocidad*2;
-        const width = n.el.offsetWidth;
-        if(x > window.innerWidth) x = xDup - width;
-        if(xDup > window.innerWidth) xDup = x - width;
-        n.el.style.left = x+"px";
-        n.dup.style.left = xDup+"px";
-    });
-    requestAnimationFrame(moverNubes);
+  nubes.forEach(n=>{
+    let x=parseFloat(n.el.style.left);
+    let xDup=parseFloat(n.dup.style.left);
+    x+=n.velocidad*2;
+    xDup+=n.velocidad*2;
+    const width=n.el.offsetWidth;
+    if(x>window.innerWidth)x=xDup-width;
+    if(xDup>window.innerWidth)xDup=x-width;
+    n.el.style.left=x+"px";
+    n.dup.style.left=xDup+"px";
+  });
+  requestAnimationFrame(moverNubes);
+}
+function actualizarFondo(){
+  const hora=new Date().getHours();
+  const isMobile=window.innerWidth<=600;
+  if(hora>=6 && hora<18){
+    document.body.style.background="radial-gradient(circle at top left, #87CEFA, #4682B4, #0a1f2a)";
+    rainContainer.style.display="none";
+    cloudsContainer.style.display="block";
+    crearNubesContinuas();
+    moverNubes();
+  } else {
+    document.body.style.background="radial-gradient(circle at top left, #0a1f2a, #0d1417, #000)";
+    cloudsContainer.style.display="none";
+    rainContainer.style.display="block";
+    crearLluvia(isMobile?30:80);
+  }
+}
+
+// --- Estado planta ---
+function actualizarPlanta(h){
+  humedadTexto.textContent=`${h.toFixed(1)}%`;
+  if(h>80){
+    comentario.textContent="MUCHA AGUA, PUEDES MATAR LA PLANTA.";
+    imagenPlanta.src="TRISTE.png";
+  }else if(h>50){
+    comentario.textContent="LA PLANTA NO QUIERE AGUA EN ESTE MOMENTO.";
+    imagenPlanta.src="FELIZ.png";
+  }else if(h>30){
+    comentario.textContent="COMIENZA A NECESITAR AGUA.";
+    imagenPlanta.src="DESANIMADA.png";
+  }else{
+    comentario.textContent="¡LA PLANTA SE ESTÁ SECANDO! RÍEGALA PRONTO.";
+    imagenPlanta.src="PREOCUPADA.png";
+  }
+  imagenPlanta.style.opacity=1;
 }
 
 // --- Gráfico ---
@@ -216,88 +359,40 @@ const grafico=new Chart(ctx,{
   options:{responsive:true,maintainAspectRatio:false,scales:{y:{beginAtZero:true,max:100,grid:{color:"rgba(255,255,255,0.08)"}},x:{grid:{color:"rgba(255,255,255,0.08)"}}},plugins:{legend:{labels:{color:"#a7f3ff"}}}}
 });
 
-// --- Fondo ---
-function actualizarFondo(){
-    const hora=new Date().getHours();
-    const isMobile = window.innerWidth <= 600;
-    if(hora>=6 && hora<18){
-        document.body.style.background="radial-gradient(circle at top left, #87CEFA, #4682B4, #0a1f2a)";
-        rainContainer.style.display="none";
-        cloudsContainer.style.display="block";
-        crearNubesContinuas();
-        moverNubes();
-        crearLluvia(0);
-    } else {
-        document.body.style.background="radial-gradient(circle at top left, #0a1f2a, #0d1417, #000)";
-        cloudsContainer.style.display="none";
-        rainContainer.style.display="block";
-        crearLluvia(isMobile?30:80);
-    }
-}
-
-// --- Hablar siempre ---
-function hablarEstado(texto){
-    if('speechSynthesis' in window){
-        speechSynthesis.cancel();
-        const msg=new SpeechSynthesisUtterance(texto);
-        msg.lang='es-ES';
-        msg.rate=1;
-        msg.pitch=1;
-        speechSynthesis.speak(msg);
-    }
-}
-
-// --- Actualizar gota ---
-function actualizarGota(h){
-    humedadTexto.textContent=`${h.toFixed(1)}%`;
-    if(h>80){gota.style.background="linear-gradient(135deg, #007bff, #0044cc)";carita.textContent="😅";comentario.textContent="Demasiada humedad. Evita regar la planta.";estadoTexto="Demasiada humedad. Evita regar la planta.";}
-    else if(h>50){gota.style.background="linear-gradient(135deg, #00baff, #0077cc)";carita.textContent="😊";comentario.textContent="La planta está normal de agua.";estadoTexto="La planta está bien";}
-    else if(h>30){gota.style.background="linear-gradient(135deg, #ffaa00, #ff8800)";carita.textContent="😐";comentario.textContent="Comienza a necesitar agua.";estadoTexto="Comienza a necesitar agua";}
-    else{gota.style.background="linear-gradient(135deg, #ff4444, #cc0000)";carita.textContent="🥵";comentario.textContent="¡La planta está muy seca! Riégala pronto.";estadoTexto="La planta está muy seca. Riégala pronto";}
-    hablarEstado(estadoTexto);
-}
-
-// --- Actualizar gráfico ---
-function actualizarGrafico(){grafico.data.labels=tiempo;grafico.data.datasets[0].data=datosHumedad;grafico.update();}
-
-// --- Obtener humedad ---
+// --- Obtener datos ThingSpeak ---
 async function obtenerHumedad(){
-    try{
-        const res=await fetch(`https://api.thingspeak.com/channels/${canal}/fields/4.json?results=10&api_key=${apiKey}`);
-        const data=await res.json();
-        const feeds=data.feeds;
-        if(feeds.length>0){
-            datosHumedad=feeds.map(f=>parseFloat(f.field4));
-            tiempo=feeds.map(f=>new Date(f.created_at).toLocaleTimeString());
-            const ultimaH=datosHumedad[datosHumedad.length-1];
-            actualizarGota(ultimaH);
-            actualizarGrafico();
-        }
-    }catch(e){console.error("Error al leer datos",e);}
-}
-
-// --- Fecha y última actualización ---
-function actualizarFechaHora(){
-    const fecha = new Date();
-    const fechaStr = fecha.toLocaleString();
-    fechaHora.textContent = `Fecha y hora: ${fechaStr}`;
-}
-
-async function actualizarUltimaActualizacion(){
-    try {
-        const res = await fetch(`https://api.thingspeak.com/channels/${canal}/fields/4.json?results=1&api_key=${apiKey}`);
-        const data = await res.json();
-        if(data.feeds.length > 0){
-            const ultima = new Date(data.feeds[0].created_at);
-            const ultimaStr = ultima.toLocaleString();
-            ultimaActualizacion.textContent = `Última actualización: ${ultimaStr}`;
-        } else {
-            ultimaActualizacion.textContent = `Última actualización: no disponible`;
-        }
-    } catch(e){
-        console.error("Error al obtener última actualización", e);
-        ultimaActualizacion.textContent = `Última actualización: error`;
+  try{
+    const res=await fetch(`https://api.thingspeak.com/channels/${canal}/fields/4.json?results=10&api_key=${apiKey}`);
+    const data=await res.json();
+    const feeds=data.feeds;
+    if(feeds.length>0){
+      const datos=feeds.map(f=>parseFloat(f.field4));
+      const tiempos=feeds.map(f=>new Date(f.created_at).toLocaleTimeString());
+      datosHumedad=datos;
+      grafico.data.labels=tiempos;
+      grafico.data.datasets[0].data=datos;
+      grafico.update();
+      // Mostrar estado según el último valor de humedad:
+      const hActual = datos[datos.length - 1];
+      actualizarPlanta(hActual);
     }
+  }catch(e){console.error("Error al leer datos",e);}
+}
+
+// --- Fecha y actualización ---
+function actualizarFechaHora(){
+  const fecha=new Date();
+  fechaHora.textContent=`Fecha y hora: ${fecha.toLocaleString()}`;
+}
+async function actualizarUltimaActualizacion(){
+  try{
+    const res=await fetch(`https://api.thingspeak.com/channels/${canal}/fields/4.json?results=1&api_key=${apiKey}`);
+    const data=await res.json();
+    if(data.feeds.length>0){
+      const ultima=new Date(data.feeds[0].created_at);
+      ultimaActualizacion.textContent=`Última actualización: ${ultima.toLocaleString()}`;
+    }
+  }catch(e){ultimaActualizacion.textContent="Última actualización: error";}
 }
 
 // --- Menú ---
@@ -310,23 +405,11 @@ btnGraficas.onclick=()=>{btnGraficas.classList.add('active');btnEstado.classList
 
 // --- Inicialización ---
 actualizarFondo();
-obtenerHumedad();
+obtenerHumedad(); // 👈 obtiene humedad y muestra imagen según valor real
 actualizarFechaHora();
 actualizarUltimaActualizacion();
-
-// --- Repetición cada 10 segundos para datos y fondo ---
-setInterval(()=>{actualizarFondo();obtenerHumedad();actualizarUltimaActualizacion();},10000);
-
-// --- Repetición cada 1 minuto para hablar ---
-setInterval(()=>{
-    if(datosHumedad.length>0){
-        const ultimaH=datosHumedad[datosHumedad.length-1];
-        actualizarGota(ultimaH);
-    }
-},60000);
-
-// --- Actualizar hora cada segundo ---
-setInterval(actualizarFechaHora, 1000);
+setInterval(()=>{obtenerHumedad();actualizarUltimaActualizacion();},10000);
+setInterval(actualizarFechaHora,1000);
 </script>
 </body>
 </html>
